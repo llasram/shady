@@ -3,11 +3,6 @@
 producing `gen-class`-backed JVM interop classes."
   (:use [shady.gen-class :only [generate-class]]))
 
-(defmacro ^:private prog1
-  "Evaluates the result of expr, then evaluates the forms in body (presumably
-for side-effects), then returns the result of expr."
-  [expr & body] `(let [value# ~expr] ~@body value#))
-
 (defn- class-name
   [sym] (.getName ^Class (resolve sym)))
 
@@ -112,6 +107,7 @@ provide an initialization function."
                :methods methods
                :prefix prefix)]
     (generate-class opts)
-    `(prog1 (import ~(symbol pqname))
+    `(let [result# (import ~(symbol pqname))]
        ~@(map (partial defn-bodies prefix fields state init-name)
-              (apply concat (vals specs))))))
+              (apply concat (vals specs)))
+       result#)))
