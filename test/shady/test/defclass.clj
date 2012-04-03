@@ -1,4 +1,4 @@
-(ns defclass.core-test
+(ns shady.defclass-test
   (:use clojure.test
         defclass.core))
 
