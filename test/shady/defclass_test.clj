@@ -60,7 +60,7 @@
   (fieldA [this] field-a)
   (fieldB [this] field-b))
 
-(deftest test-init
+(deftest test-fields
   (testing "Field values are locally accessible in methods"
     (let [obj (Fields. :left :right)]
       (is (= :left (.fieldA obj)))
