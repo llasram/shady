@@ -4,7 +4,7 @@ redefinition."
   (:refer-clojure :exclude [gen-class]))
 
 (def ^:private core-generate-class
-  (deref (ns-resolve (the-ns 'clojure.core) 'generate-class)))
+  (deref #'clojure.core/generate-class))
 
 (defn- reload-class
   [pqname bytecode]
