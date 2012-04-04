@@ -9,7 +9,7 @@ Shady is available on Clojars.  Add this `:dependency` to your Leiningen
 `project.clj`:
 
 ```clj
-[shady "0.1.0-SNAPSHOT"]
+[shady "0.1.0"]
 ```
 
 ## Usage
