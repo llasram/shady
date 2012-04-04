@@ -40,7 +40,8 @@ producing `gen-class`-backed JVM interop classes."
 
 Creates a class named `name` in the package of the current namespace and
 imports that class into the current namespace.  When AOT-compiling, writes the
-generate class-file to the appropriate package-location under `*compile-path*`.
+generated class-file to the appropriate package-location under
+`*compile-path*`.
 
 The `options` are as per the options to `clojure.core/gen-class`.
 
