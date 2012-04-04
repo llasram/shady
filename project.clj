@@ -1,5 +1,5 @@
-(defproject org.platypope/shady "0.1.0-SNAPSHOT"
-  :description "Collection of shady (inter)operators for JVM Clojure."
+(defproject shady "0.1.0-SNAPSHOT"
+  :description "A collection of inter-operators for JVM Clojure."
   :url "http://github.com/llasram/shady"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
