@@ -66,3 +66,10 @@
       (is (= :left (.fieldA obj)))
       (is (= :right (.fieldB obj))))))
 
+
+(defclass Static []
+  (^:static staticMethod [] :works))
+
+(deftest test-static
+  (testing "defclass can define static methods"
+    (is (= :works (Static/staticMethod)))))

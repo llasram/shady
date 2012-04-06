@@ -9,10 +9,14 @@ producing `gen-class`-backed JVM interop classes."
 (defn- method-sigs
   [spec]
   (let [mname (first spec)
+        static (:static (meta mname))
         spec (drop-while (comp not sequential?) spec)
         maybe-params (first spec)
         meta-tag #(get (meta %) :tag 'Object)
-        sig-for #(vector mname (->> % rest (map meta-tag) vec) (meta-tag %))]
+        sig-for (fn [margs]
+                  (with-meta
+                    [mname (->> margs rest (map meta-tag) vec) (meta-tag margs)]
+                    {:static static}))]
     (if (vector? maybe-params)
       [(sig-for maybe-params)]
       (map (comp sig-for first) spec))))
