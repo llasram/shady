@@ -1,14 +1,16 @@
 (ns shady.gen-class
   "Replacement for `clojure.core/gen-class` which supports dynamic class
 redefinition."
-  (:refer-clojure :exclude [gen-class]))
+  (:refer-clojure :exclude [gen-class])
+  (:import [clojure.lang DynamicClassLoader]))
 
 (def ^:private core-generate-class
   (deref #'clojure.core/generate-class))
 
 (defn- reload-class
   [pqname bytecode]
-  (-> (clojure.lang.RT/baseLoader) (.defineClass pqname bytecode '())))
+  (let [^DynamicClassLoader loader (clojure.lang.RT/baseLoader)]
+    (.defineClass loader pqname bytecode '())))
 
 (defn generate-class
   "Function version of `gen-class`.  Takes a map of options which are otherwise
