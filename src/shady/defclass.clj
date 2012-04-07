@@ -21,15 +21,26 @@ producing `gen-class`-backed JVM interop classes."
       [(sig-for maybe-params)]
       (map (comp sig-for first) spec))))
 
-(defn- fn-body
-  [fields state body]
-  (let [[[this :as params] & body] body]
+(defn- assoc-meta
+  [obj key val] (with-meta obj (assoc (meta obj) key val)))
+
+(defn- fn-body-instance
+  [pqname fields state params body]
+  (let [[this & args] params, this (assoc-meta this :tag pqname)
+        params (with-meta (apply vector this args) (meta params))]
     (if (nil? fields)
       (list* params body)
       `(~params (let [~fields (. ~this ~state)] ~@body)))))
 
+(defn- fn-body
+  [pqname fname fields state body]
+  (let [[params & body] body]
+    (if (:static (meta fname))
+      (list* params body)
+      (fn-body-instance pqname fields state params body))))
+
 (defn- defn-bodies
-  [prefix fields state init-name spec]
+  [pqname prefix fields state init-name spec]
   (let [mname (first spec)
         fname (with-meta (symbol (str prefix mname)) (meta mname))
         [fmeta bodies] (split-with (comp not sequential?) (rest spec))
@@ -37,7 +48,7 @@ producing `gen-class`-backed JVM interop classes."
     (if (= mname init-name)
       `(defn ~fname ~@fmeta ~@bodies)
       `(defn ~fname ~@fmeta
-         ~@(map (partial fn-body fields state) bodies)))))
+         ~@(map (partial fn-body pqname fname fields state) bodies)))))
 
 (defmacro defclass
   "(defclass name [fields*] options* specs*)
@@ -84,8 +95,8 @@ provide an initialization function."
                                  [(update-in specs [iface] conj form) iface]
                                  [(assoc specs form []) form]))
                              [{} name] specs))
-        pqname (str *ns* "." name)
-        prefix (str "__" name "-")
+        pqname (symbol (str *ns* "." name))
+        prefix (or (:prefix opts) (str "__" name "-"))
         not-ifaces (hash-set 'Object (:extends opts) name)
         impl-names (apply hash-set (keys specs))
         implements (->> (apply disj impl-names not-ifaces) (map class-name) vec)
@@ -107,12 +118,12 @@ provide an initialization function."
                (assoc opts :extends (class-name extends))
                opts)
         opts (assoc opts
-               :name pqname
+               :name (str pqname)
                :implements implements
                :methods methods
                :prefix prefix)]
     (generate-class opts)
-    `(let [result# (import ~(symbol pqname))]
-       ~@(map (partial defn-bodies prefix fields state init-name)
+    `(let [result# (import ~pqname)]
+       ~@(map (partial defn-bodies pqname prefix fields state init-name)
               (apply concat (vals specs)))
        result#)))
