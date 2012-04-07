@@ -84,3 +84,13 @@
 (deftest test-static
   (testing "defclass can define static methods"
     (is (= :works (Static/staticMethod)))))
+
+
+(defclass Identical []
+  (exampleMethod [this] :works))
+
+(deftest test-identical []
+  (testing "defclass classes are identical across expressions"
+    (let [^Identical obj (Identical.)]
+      (is (= Identical (class (Identical.))))
+      (is (= :works (.exampleMethod obj))))))
