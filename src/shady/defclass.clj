@@ -111,7 +111,7 @@ provide an initialization function."
         fields (if (>= 1 (count fields)) (first fields) (vec fields))
         state (-> (or (:state opts) (str prefix 'state))
                   str (.replace \- \_) symbol)
-        opts (if (or (:state opts) (seq fields))
+        opts (if (or (:state opts) fields)
                (assoc opts :state state)
                opts)
         opts (if-let [extends (:extends opts)]

@@ -67,6 +67,17 @@
       (is (= :right (.fieldB obj))))))
 
 
+(defclass SingleField [field]
+  :constructors {[Object] []}
+  (-init [arg] [[] arg])
+  (getField [this] field))
+
+(deftest test-single-field
+  (testing "defclass can define classes with a single field"
+    (let [obj (SingleField. :works)]
+      (is (= :works (.getField obj))))))
+
+
 (defclass Static []
   (^:static staticMethod [] :works))
 
