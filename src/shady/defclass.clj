@@ -95,7 +95,8 @@ provide an initialization function."
                                  [(update-in specs [iface] conj form) iface]
                                  [(assoc specs form []) form]))
                              [{} name] specs))
-        pqname (symbol (str *ns* "." name))
+        ns-part (namespace-munge *ns*)
+        pqname (symbol (str ns-part "." name))
         prefix (or (:prefix opts) (str "__" name "-"))
         not-ifaces (hash-set 'Object (:extends opts) name)
         impl-names (apply hash-set (keys specs))
