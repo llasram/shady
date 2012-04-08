@@ -28,15 +28,19 @@ providing a `deftype`-like interface to that `gen-class`.  For example:
 
   Example
   (-init [arg1 arg2] [[arg1] [arg1 arg2]])
-  (newMethod ^String [^int param]
+  (newMethod ^String [this ^int param]
     (str "example:" field1 ":" param ":" field2))
+  (defaultTypes [this arg1 arg2]
+    "Types defaulting to Object, as you'd hope.")
+  (^:static staticMethod [arg1 arg2]
+    "Defining static methods is just as easy.")
 
   BaseClass
-  (override ^Long [^Class class] 10)
+  (override [this obj] 10)
 
   SomeInterface
-  (implementedMethod []
-    "Types defaulting to Object, as you'd hope."))
+  (implementedMethod [this]
+    "Implement all the interfaces!"))
 ```
 
 ## License
