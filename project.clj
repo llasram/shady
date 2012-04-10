@@ -1,4 +1,4 @@
-(defproject shady "0.1.2-SNAPSHOT"
+(defproject shady "0.2.0-SNAPSHOT"
   :description "A collection of inter-operators for JVM Clojure."
   :url "http://github.com/llasram/shady"
   :license {:name "Eclipse Public License"
