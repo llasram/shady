@@ -94,3 +94,13 @@
     (let [^Identical obj (Identical.)]
       (is (= Identical (class (Identical.))))
       (is (= :works (.exampleMethod obj))))))
+
+
+(defclass OtherPackage []
+  :package other.package
+  (exampleMethod [this] :works))
+
+(deftest test-other-package []
+  (testing "defclass can create classes in other packages"
+    (let [obj (other.package.OtherPackage.)]
+      (is (= :works (.exampleMethod obj))))))

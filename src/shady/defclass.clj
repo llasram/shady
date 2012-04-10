@@ -58,7 +58,13 @@ imports that class into the current namespace.  When AOT-compiling, writes the
 generated class-file to the appropriate package-location under
 `*compile-path*`.
 
-The `options` are as per the options to `clojure.core/gen-class`.
+The `options` are as per the options to `clojure.core/gen-class`, with the
+following differences: (a) the `:name` and `:methods` arguments are replaced by
+the syntax of `defclass`; (b) the `:impl-ns` option may not be provided,
+and (c) the following new options are available:
+
+- `:package`: The name of the package in which to create the new class.
+  Defaults to the package name of the current namespace.
 
 Each of the `specs` consists of a class/interface name followed by zero or more
 method bodies:
@@ -95,8 +101,9 @@ provide an initialization function."
                                  [(update-in specs [iface] conj form) iface]
                                  [(assoc specs form []) form]))
                              [{} name] specs))
-        ns-part (namespace-munge *ns*)
-        pqname (symbol (str ns-part "." name))
+        [package opts] [(or (:package opts) (namespace-munge *ns*))
+                        (dissoc opts :package)]
+        pqname (symbol (str package "." name))
         prefix (or (:prefix opts) (str "__" name "-"))
         not-ifaces (hash-set 'Object (:extends opts) name)
         impl-names (apply hash-set (keys specs))
