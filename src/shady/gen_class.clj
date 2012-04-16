@@ -29,5 +29,5 @@ run-time redefinition of the generated class.  Imports the class into the
 current namespace."
   [& options]
   (let [options-map (apply hash-map options)]
-    (generate-class options-map)
-    `(import ~(symbol (:name options-map)))))
+    `(do (generate-class ~options-map)
+         (import ~(symbol (:name options-map))))))
